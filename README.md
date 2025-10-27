@@ -1,114 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Mind Map: Yura Yunita</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f7f7f7;
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pro Player Training Simulator</title>
+<style>
+  :root{
+    --bg:#0b0f14;
+    --panel:#0f1720;
+    --accent:#12b886;
+    --muted:#98a0ad;
+    --danger:#ff5252;
+    --glass: rgba(255,255,255,0.03);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  body{background:linear-gradient(180deg,#071019 0%, #0b1220 100%);color:#e6eef6;display:flex;align-items:stretch;padding:18px;box-sizing:border-box;}
+  .container{flex:1;display:grid;grid-template-columns:1fr 340px;gap:16px;height:calc(100vh - 36px);}
+  /* Left: game */
+  .game-card{background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:flex;flex-direction:column;overflow:hidden}
+  header.h{display:flex;gap:12px;align-items:center;padding:6px 8px}
+  .title{font-weight:600;font-size:18px}
+  .sub{color:var(--muted);font-size:13px}
+  .stage{flex:1;display:flex;gap:12px;align-items:stretch}
+  .viewport{flex:1;background:linear-gradient(180deg,#071826,#03101a);border-radius:10px;position:relative;overflow:hidden}
+  canvas{display:block;width:100%;height:100%;background:transparent}
+  .hud{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:8px}
+  .hud .box{background:var(--glass);padding:6px 8px;border-radius:8px;font-size:13px;color:#dbeaf1}
+  .crosshair{position:absolute;left:50%;top:50%
 
-    h1 {
-      text-align: center;
-      color: #cc3366;
-    }
-
-    .accordion {
-      background-color: #ffffff;
-      color: #333;
-      cursor: pointer;
-      padding: 15px;
-      width: 100%;
-      border: none;
-      outline: none;
-      text-align: left;
-      font-size: 16px;
-      transition: 0.4s;
-      margin-bottom: 5px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .accordion.active, .accordion:hover {
-      background-color: #ffe6f0;
-    }
-
-    .panel {
-      padding: 0 15px;
-      background-color: white;
-      display: none;
-      overflow: hidden;
-      border-left: 4px solid #cc3366;
-      border-radius: 0 0 5px 5px;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>Mind Map: Yura Yunita</h1>
-
-  <button class="accordion">1. Identitas Pribadi</button>
-  <div class="panel">
-    <p>Nama asli: Yunita Rachman<br>
-    Nama panggung: Yura Yunita<br>
-    Lahir: Bandung, 9 Juni 1991<br>
-    Agama: Islam</p>
-  </div>
-
-  <button class="accordion">2. Pendidikan</button>
-  <div class="panel">
-    <p>Lulusan Ilmu Komunikasi, UNPAD - Jurusan Humas</p>
-  </div>
-
-  <button class="accordion">3. Awal Karier</button>
-  <div class="panel">
-    <p>Ikut The Voice Indonesia (2013).<br>
-    Debut: Album "Yura" (2014).<br>
-    Kolaborasi awal: Glenn Fredly - "Cinta dan Rahasia".</p>
-  </div>
-
-  <button class="accordion">4. Gaya Musik & Tema</button>
-  <div class="panel">
-    <p>Genre: Pop, Soul, Jazz.<br>
-    Tema: Self-love, pengalaman pribadi, kesehatan mental.</p>
-  </div>
-
-  <button class="accordion">5. Karya Terkenal</button>
-  <div class="panel">
-    <ul>
-      <li>Album: Yura (2014), Merakit (2018), Tutur Batin (2021)</li>
-      <li>Lagu: "Berawal Dari Tatap", "Cinta dan Rahasia", "Tutur Batin"</li>
-    </ul>
-  </div>
-
-  <button class="accordion">6. Prestasi</button>
-  <div class="panel">
-    <p>AMI Awards, Indonesian Choice Awards, dan banyak lagi.</p>
-  </div>
-
-  <button class="accordion">7. Kehidupan Pribadi</button>
-  <div class="panel">
-    <p>Menikah dengan Donne Maula. Aktif di proyek sosial & musik independen.</p>
-  </div>
-
-  <script>
-    const acc = document.querySelectorAll(".accordion");
-    acc.forEach(button => {
-      button.addEventListener("click", function () {
-        this.classList.toggle("active");
-        const panel = this.nextElementSibling;
-        if (panel.style.display === "block") {
-          panel.style.display = "none";
-        } else {
-          panel.style.display = "block";
-        }
-      });
-    });
-  </script>
-
-</body>
-</html>
