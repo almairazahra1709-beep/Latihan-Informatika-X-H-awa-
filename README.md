@@ -1,33 +1,127 @@
-<!doctype html>
+
+
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Pro Player Training Simulator</title>
-<style>
-  :root{
-    --bg:#0b0f14;
-    --panel:#0f1720;
-    --accent:#12b886;
-    --muted:#98a0ad;
-    --danger:#ff5252;
-    --glass: rgba(255,255,255,0.03);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tebak Angka Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Tebak Angka</h1>
+    <p>Komputer telah memilih angka antara 1–100.<br>Coba tebak angka itu!</p>
+
+    <input type="number" id="guessInput" placeholder="Masukkan angka..." min="1" max="100">
+    <button id="guessButton">Tebak!</button>
+
+    <p id="message"></p>
+    <p id="attempts">Percobaan: 0</p>
+    <button id="restartButton" class="hidden">Main Lagi</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #00bcd4, #3f51b5);
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  width: 320px;
+}
+
+input {
+  padding: 10px;
+  width: 60%;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #ff9800;
+  color: white;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #e68900;
+}
+
+.hidden {
+  display: none;
+}
+
+#message {
+  font-weight: bold;
+  margin-top: 20px;
+}
+let randomNumber = Math.floor(Math.random() * 100) + 1;
+let attempts = 0;
+
+const guessInput = document.getElementById('guessInput');
+const guessButton = document.getElementById('guessButton');
+const message = document.getElementById('message');
+const attemptsDisplay = document.getElementById('attempts');
+const restartButton = document.getElementById('restartButton');
+
+guessButton.addEventListener('click', checkGuess);
+restartButton.addEventListener('click', restartGame);
+
+function checkGuess() {
+  const userGuess = Number(guessInput.value);
+  attempts++;
+
+  if (userGuess < 1 || userGuess > 100 || isNaN(userGuess)) {
+    message.textContent = "Masukkan angka valid antara 1–100!";
+    return;
   }
-  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-  body{background:linear-gradient(180deg,#071019 0%, #0b1220 100%);color:#e6eef6;display:flex;align-items:stretch;padding:18px;box-sizing:border-box;}
-  .container{flex:1;display:grid;grid-template-columns:1fr 340px;gap:16px;height:calc(100vh - 36px);}
-  /* Left: game */
-  .game-card{background:var(--panel);border-radius:12px;padding:12px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:flex;flex-direction:column;overflow:hidden}
-  header.h{display:flex;gap:12px;align-items:center;padding:6px 8px}
-  .title{font-weight:600;font-size:18px}
-  .sub{color:var(--muted);font-size:13px}
-  .stage{flex:1;display:flex;gap:12px;align-items:stretch}
-  .viewport{flex:1;background:linear-gradient(180deg,#071826,#03101a);border-radius:10px;position:relative;overflow:hidden}
-  canvas{display:block;width:100%;height:100%;background:transparent}
-  .hud{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:8px}
-  .hud .box{background:var(--glass);padding:6px 8px;border-radius:8px;font-size:13px;color:#dbeaf1}
-  .crosshair{position:absolute;left:50%;top:50%
 
+  if (userGuess === randomNumber) {
+    message.textContent = `🎉 Benar! Angkanya adalah ${randomNumber}.`;
+    guessButton.disabled = true;
+    restartButton.classList.remove('hidden');
+  } else if (userGuess < randomNumber) {
+    message.textContent = "Terlalu kecil! Coba angka yang lebih besar.";
+  } else {
+    message.textContent = "Terlalu besar! Coba angka yang lebih kecil.";
+  }
 
+  attemptsDisplay.textContent = `Percobaan: ${attempts}`;
+  guessInput.value = '';
+  guessInput.focus();
+}
+
+function restartGame() {
+  randomNumber = Math.floor(Math.random() * 100) + 1;
+  attempts = 0;
+  message.textContent = '';
+  attemptsDisplay.textContent = 'Percobaan: 0';
+  guessButton.disabled = false;
+  restartButton.classList.add('hidden');
+  guessInput.value = '';
+}
 
 
