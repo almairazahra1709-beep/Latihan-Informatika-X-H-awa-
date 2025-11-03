@@ -181,3 +181,24 @@ function init() {
 
 // Jalankan inisialisasi setelah DOM dimuat
 window.onload = init;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏍️ Motor Race Pro - Sederhana</title> 
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="https://contoh-url-anda.com" style="text-decoration: none; color: inherit;">
+        <div id="controls"> 
+            <p>Gunakan tombol **Atas** (Gas) dan **Bawah** (Rem) untuk mengontrol motor.</p> 
+            <p>Jaga skor tetap tinggi!</p> 
+            <p>Skor: <span id="score">0</span></p> 
+        </div> 
+    </a>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
