@@ -1,127 +1,183 @@
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tebak Angka Game</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏍️ Motor Race Pro - Sederhana</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>🎯 Tebak Angka</h1>
-    <p>Komputer telah memilih angka antara 1–100.<br>Coba tebak angka itu!</p>
+    <div id="game-container">
+        <div id="road">
+            <div id="motorcycle"></div>
+            <div id="obstacle"></div>
+        </div>
+    </div>
+    
+    <div id="controls">
+        <p>Gunakan tombol **Atas** (Gas) dan **Bawah** (Rem) untuk mengontrol motor.</p>
+        <p>Jaga skor tetap tinggi!</p>
+        <p>Skor: <span id="score">0</span></p>
+    </div>
 
-    <input type="number" id="guessInput" placeholder="Masukkan angka..." min="1" max="100">
-    <button id="guessButton">Tebak!</button>
-
-    <p id="message"></p>
-    <p id="attempts">Percobaan: 0</p>
-    <button id="restartButton" class="hidden">Main Lagi</button>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
 body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #00bcd4, #3f51b5);
-  color: white;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    margin: 0;
+    padding-top: 20px;
 }
 
-.container {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  width: 320px;
+#game-container {
+    width: 600px;
+    height: 300px;
+    border: 5px solid #fff;
+    overflow: hidden; /* Penting agar motor dan rintangan tidak keluar dari batas */
+    background-color: #555;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-input {
-  padding: 10px;
-  width: 60%;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  margin-top: 15px;
+#road {
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #ff9800;
-  color: white;
-  transition: 0.3s;
+/* Motor */
+#motorcycle {
+    width: 40px;
+    height: 30px;
+    background-color: #FF5722; /* Merah Oranye */
+    position: absolute;
+    bottom: 10px;
+    left: 50px; /* Posisi awal motor */
+    border-radius: 5px;
+    transition: transform 0.05s ease-out; /* Untuk animasi gas/rem lebih halus */
 }
 
-button:hover {
-  background-color: #e68900;
+/* Rintangan */
+#obstacle {
+    width: 20px;
+    height: 40px;
+    background-color: #4CAF50; /* Hijau */
+    position: absolute;
+    bottom: 10px;
+    right: -20px; /* Mulai di luar layar */
+    border-radius: 5px;
+    transition: background-color 0.2s;
 }
 
-.hidden {
-  display: none;
+#controls {
+    margin-top: 20px;
+    text-align: center;
 }
 
-#message {
-  font-weight: bold;
-  margin-top: 20px;
+#score {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #FFEB3B; /* Kuning */
 }
-let randomNumber = Math.floor(Math.random() * 100) + 1;
-let attempts = 0;
+// Pengaturan Game
+const GAME_SPEED = 1000 / 60; // Refresh rate 60 FPS
+const ROAD_WIDTH = 600;
 
-const guessInput = document.getElementById('guessInput');
-const guessButton = document.getElementById('guessButton');
-const message = document.getElementById('message');
-const attemptsDisplay = document.getElementById('attempts');
-const restartButton = document.getElementById('restartButton');
+// Kecepatan
+let currentSpeed = 0; // Kecepatan horizontal motor
+let acceleration = 0.5;
+let maxSpeed = 8;
 
-guessButton.addEventListener('click', checkGuess);
-restartButton.addEventListener('click', restartGame);
+// DOM Elements
+const motor = document.getElementById('motorcycle');
+const obstacle = document.getElementById('obstacle');
+const scoreDisplay = document.getElementById('score');
 
-function checkGuess() {
-  const userGuess = Number(guessInput.value);
-  attempts++;
+// Variabel Game
+let score = 0;
+let obstacleX = ROAD_WIDTH;
+let isGameOver = false;
 
-  if (userGuess < 1 || userGuess > 100 || isNaN(userGuess)) {
-    message.textContent = "Masukkan angka valid antara 1–100!";
-    return;
-  }
+// --- KONTROL MOTOR ---
+document.addEventListener('keydown', (e) => {
+    if (isGameOver) return;
 
-  if (userGuess === randomNumber) {
-    message.textContent = `🎉 Benar! Angkanya adalah ${randomNumber}.`;
-    guessButton.disabled = true;
-    restartButton.classList.remove('hidden');
-  } else if (userGuess < randomNumber) {
-    message.textContent = "Terlalu kecil! Coba angka yang lebih besar.";
-  } else {
-    message.textContent = "Terlalu besar! Coba angka yang lebih kecil.";
-  }
+    if (e.key === 'ArrowUp') {
+        // Gas: Meningkatkan kecepatan
+        currentSpeed = Math.min(currentSpeed + acceleration, maxSpeed);
+        motor.style.transform = 'scaleY(1.1)'; // Efek sedikit 'menekuk'
+    } else if (e.key === 'ArrowDown') {
+        // Rem: Mengurangi kecepatan
+        currentSpeed = Math.max(currentSpeed - acceleration * 1.5, 0); // Rem lebih kuat
+        motor.style.transform = 'scaleY(0.9)'; // Efek sedikit 'memendek'
+    }
+});
 
-  attemptsDisplay.textContent = `Percobaan: ${attempts}`;
-  guessInput.value = '';
-  guessInput.focus();
+document.addEventListener('keyup', (e) => {
+    // Reset efek visual saat tombol dilepas
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        motor.style.transform = 'scaleY(1)';
+    }
+});
+
+// --- LOGIKA PERGERAKAN ---
+function updateGame() {
+    if (isGameOver) return;
+
+    // 1. Gerakkan Rintangan (berdasarkan kecepatan motor)
+    // Motor yang lebih cepat membuat rintangan bergerak lebih cepat ke kiri
+    obstacleX -= currentSpeed;
+    
+    // 2. Tampilkan Rintangan
+    obstacle.style.right = `${ROAD_WIDTH - obstacleX}px`;
+
+    // 3. Atur Ulang Rintangan
+    if (obstacleX < -20) {
+        // Rintangan melewati motor
+        obstacleX = ROAD_WIDTH + Math.random() * 200; // Jarak acak
+        score++;
+        scoreDisplay.textContent = score;
+    }
+
+    // 4. Deteksi Tabrakan
+    const motorLeft = motor.offsetLeft;
+    const motorRight = motorLeft + motor.offsetWidth;
+    const motorBottom = motor.offsetTop + motor.offsetHeight;
+    
+    const obstacleLeft = obstacle.offsetLeft;
+    const obstacleRight = obstacleLeft + obstacle.offsetWidth;
+
+    // Cek tabrakan berdasarkan posisi horizontal (kita anggap posisi Y-nya sama)
+    if (motorRight > obstacleLeft && motorLeft < obstacleRight) {
+        // Hanya cek jika rintangan berada di dekat motor
+        if (obstacleX > 0 && obstacleX < ROAD_WIDTH) { 
+            gameOver();
+            return;
+        }
+    }
+    
+    // 5. Loop Game
+    requestAnimationFrame(updateGame);
 }
 
-function restartGame() {
-  randomNumber = Math.floor(Math.random() * 100) + 1;
-  attempts = 0;
-  message.textContent = '';
-  attemptsDisplay.textContent = 'Percobaan: 0';
-  guessButton.disabled = false;
-  restartButton.classList.add('hidden');
-  guessInput.value = '';
+// --- FUNGSI GAME OVER ---
+function gameOver() {
+    isGameOver = true;
+    obstacle.style.backgroundColor = '#F44336'; // Rintangan menjadi merah
+    motor.style.backgroundColor = '#E91E63'; // Motor menjadi ungu
+    alert(`Game Over! Skor Akhir Anda: ${score}`);
 }
 
+// --- INICIALISASI ---
+function init() {
+    // Mulai loop game
+    requestAnimationFrame(updateGame);
+}
 
+// Jalankan inisialisasi setelah DOM dimuat
+window.onload = init;
