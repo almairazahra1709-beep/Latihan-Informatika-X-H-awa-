@@ -201,4 +201,56 @@ window.onload = init;
     <script src="script.js"></script>
 </body>
 </html>
+// script.js
+
+// ... (Kode pengaturan dan variabel game di atas tetap sama) ...
+
+// DOM Elements baru
+const gasButton = document.getElementById('gasButton');
+const brakeButton = document.getElementById('brakeButton');
+
+// --- FUNGSI KONTROL MOTOR ---
+function applyGas() {
+    if (isGameOver) return;
+    currentSpeed = Math.min(currentSpeed + acceleration, maxSpeed);
+    motor.style.transform = 'scaleY(1.1)'; // Efek sedikit 'menekuk'
+}
+
+function applyBrake() {
+    if (isGameOver) return;
+    currentSpeed = Math.max(currentSpeed - acceleration * 1.5, 0); // Rem lebih kuat
+    motor.style.transform = 'scaleY(0.9)'; // Efek sedikit 'memendek'
+}
+
+function resetMotorVisual() {
+    motor.style.transform = 'scaleY(1)';
+}
+
+// --- KONTROL KEYBOARD (seperti kode Anda) ---
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') {
+        applyGas();
+    } else if (e.key === 'ArrowDown') {
+        applyBrake();
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        resetMotorVisual();
+    }
+});
+
+// --- KONTROL KLIK TOMBOL HTML (Perubahan utama) ---
+// Ketika tombol GAS diklik
+gasButton.addEventListener('mousedown', applyGas); 
+gasButton.addEventListener('mouseup', resetMotorVisual); 
+gasButton.addEventListener('mouseleave', resetMotorVisual); // Penting untuk mobile/klik tahan
+
+// Ketika tombol REM diklik
+brakeButton.addEventListener('mousedown', applyBrake);
+brakeButton.addEventListener('mouseup', resetMotorVisual);
+brakeButton.addEventListener('mouseleave', resetMotorVisual);
+
+// ... (Sisa fungsi updateGame() dan gameOver() tetap sama) ...
 
